@@ -10,7 +10,7 @@ public class HelperBase {
     }
 
     protected void click(By locator) {
-        manager.driver.findElement(locator).click();
+      manager.driver.findElement(locator).click();
     }
 
     protected void type(By locator, String text) {
