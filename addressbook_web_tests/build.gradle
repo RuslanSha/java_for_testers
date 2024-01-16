@@ -14,8 +14,10 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter'
     testImplementation 'org.seleniumhq.selenium:selenium-java:4.16.1'
     testImplementation 'com.titusfortner:selenium-logger:2.4.0'
-    testImplementation 'org.jcommander:jcommander:1.83'
-    testImplementation 'com.fasterxml.jackson.core:jackson-databind:2.16.1'
+    implementation 'org.jcommander:jcommander:1.83'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.16.1'
+    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.16.1'
+    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.16.1'
 }
 
 test {
