@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class GroupRemovalTests extends TestBase {
+
     @Test
     public void canRemoveGroup() {
         if (app.groups().getCount() == 0) {
