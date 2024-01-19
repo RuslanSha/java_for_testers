@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class JdbcHelper extends HelperBase {
-
     public JdbcHelper(ApplicationManager manager) {
         super(manager);
     }
