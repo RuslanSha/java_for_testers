@@ -3,6 +3,7 @@ package tests;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import common.CommonFunctions;
 import model.GroupData;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -18,7 +19,7 @@ import java.util.List;
 
 public class GroupCreationTests extends TestBase {
 
-    public static List<GroupData> groupProviderOld() throws IOException {
+    public static List<GroupData> groupProvider() throws IOException {
         var result = new ArrayList<GroupData>();
 //        for (var name : List.of("","group name")) {
 //            for (var header : List.of("","group header")) {
@@ -27,45 +28,45 @@ public class GroupCreationTests extends TestBase {
 //                }
 //            }
 //        }
-        ObjectMapper mapper = new ObjectMapper();
-        var value = mapper.readValue(new File("groups.json"), new TypeReference<List<GroupData>>() {
-        });
-        result.addAll(value);
-        return result;
-    }
-
-    public static List<GroupData> groupProvider() throws IOException {
-        var result = new ArrayList<GroupData>();
-        var json = "";
-        try (var reader = new FileReader("groups.json");
-             var breader = new BufferedReader(reader)
-        ) {
-            var line = breader.readLine();
-            while (line != null) {
-                json = json + line;
-                line = breader.readLine();
-            }
-        }
-        //var json = Files.readString(Paths.get("groups.json"));
-        ObjectMapper mapper = new XmlMapper();
+//        var json = Files.readString(Paths.get("groups.json"));
+//        var json = "";
+//        try (var reader = new FileReader("groups.json");
+//             var breader = new BufferedReader(reader)
+//        ) {
+//            var line = breader.readLine();
+//            while (line != null) {
+//                json = json + line;
+//                line = breader.readLine();
+//            }
+//        }
+        var mapper = new XmlMapper();
         var value = mapper.readValue(new File("groups.xml"), new TypeReference<List<GroupData>>() {
         });
         result.addAll(value);
         return result;
     }
 
+    public static List<GroupData> singleRandomGroup() {
+        return List.of(new GroupData()
+                .withName(CommonFunctions.randomString(10))
+                .withHeader(CommonFunctions.randomString(20))
+                .withFooter(CommonFunctions.randomString(30)));
+    }
+
     @ParameterizedTest
-    @MethodSource("groupProvider")
-    public void canCreateMultipleGroup(GroupData group) {
-        var oldGroups = app.groups().getList();
+    @MethodSource("singleRandomGroup")
+    public void canCreateGroup(GroupData group) {
+        var oldGroups = app.jdbc().getgroupList();
         app.groups().createGroup(group);
-        var newGroups = app.groups().getList();
+        var newGroups = app.jdbc().getgroupList();
         Comparator<GroupData> compareById = (o1, o2) -> {
             return Integer.compare(Integer.parseInt(o1.id()), Integer.parseInt(o2.id()));
         };
         newGroups.sort(compareById);
+        var maxId = newGroups.get(newGroups.size() - 1).id();
+
         var expectedList = new ArrayList<>(oldGroups);
-        expectedList.add(group.withId(newGroups.get(newGroups.size() - 1).id()).withHeader("").withFooter(""));
+        expectedList.add(group.withId(maxId));
         expectedList.sort(compareById);
         Assertions.assertEquals(newGroups, expectedList);
     }
